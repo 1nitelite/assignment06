@@ -13,19 +13,54 @@ lstTbl = []  # list of lists to hold data
 dicRow = {}  # list of data row
 strFileName = 'CDInventory.txt'  # data storage file
 objFile = None  # file object
-intID = 0
-strTitle = ''
-stArtist = ''
 
 
 # -- PROCESSING -- #
 class DataProcessor:
-    # TODO add functions for processing here
+    """Processing the data from user to the dictionary"""
+
     @staticmethod
     def add_cd_data(intID, strTitle, stArtist):
-        # intID = int(strID)
+        """Function to add CD data to list of dictionaries
+
+        Assigns the user input into a dictionary with keys ID, Title, & Artist and their input
+        as the values of each.
+
+        Args:
+            intID: Random ID assigned by script
+            strTitle: album title
+            stArtist: artist name
+
+        Returns:
+            None.
+        """
         dicRow = {'ID': intID, 'Title': strTitle, 'Artist': stArtist}
         lstTbl.append(dicRow)
+
+    @staticmethod
+    def del_cd_data(intIDDel):
+        """Function to delete CD data from data list
+
+        Asks user for ID and will delete album according to ID number.
+
+        Args:
+            intIDDel: ID of album to be deleted
+
+        Returns:
+            None.
+        """
+        intRowNr = -1
+        blnCDRemoved = False
+        for row in lstTbl:
+            intRowNr += 1
+            if row['ID'] == intIDDel:
+                del lstTbl[intRowNr]
+                blnCDRemoved = True
+                break
+        if blnCDRemoved:
+            print('The CD was removed')
+        else:
+            print('Could not find this CD!')
 
 class FileProcessor:
     """Processing the data to and from text file"""
@@ -123,7 +158,7 @@ class IO:
         print('======= The Current Inventory: =======')
         print('ID\tCD Title (by: Artist)\n')
         for row in table:
-            print('{}\t{} (by:{})'.format(*row.values()))
+            print('{}\t{} (by: {})'.format(*row.values()))
         print('======================================')
 
     @staticmethod
@@ -141,8 +176,7 @@ class IO:
         intID = random.randint(1000, 9999)
         strTitle = input('What is the CD\'s title? ').strip()
         stArtist = input('What is the Artist\'s name? ').strip()
-        print('inside ', intID, strTitle, stArtist)
-        return intID, strTitle, stArtist
+        DataProcessor.add_cd_data(intID, strTitle, stArtist)
 
 # 1. When program starts, read in the currently saved Inventory
 FileProcessor.read_file(strFileName, lstTbl)
@@ -173,11 +207,8 @@ while True:
     elif strChoice == 'a':
         # 3.3.1 Ask user for new ID, CD Title and Artist
         IO.add_cd()
-        print('outside function ', intID, strTitle, stArtist)
 
         # 3.3.2 Add item to the table
-        # TODO move processing code into function
-        DataProcessor.add_cd_data(intID, strTitle, stArtist)
         IO.show_inventory(lstTbl)
         continue  # start loop back at top.
     # 3.4 process display current inventory
@@ -192,19 +223,7 @@ while True:
         # 3.5.1.2 ask user which ID to remove
         intIDDel = int(input('Which ID would you like to delete? ').strip())
         # 3.5.2 search thru table and delete CD
-        # TODO move processing code into function
-        intRowNr = -1
-        blnCDRemoved = False
-        for row in lstTbl:
-            intRowNr += 1
-            if row['ID'] == intIDDel:
-                del lstTbl[intRowNr]
-                blnCDRemoved = True
-                break
-        if blnCDRemoved:
-            print('The CD was removed')
-        else:
-            print('Could not find this CD!')
+        DataProcessor.del_cd_data(intIDDel)
         IO.show_inventory(lstTbl)
         continue  # start loop back at top.
     # 3.6 process save inventory to file
