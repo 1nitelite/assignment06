@@ -7,7 +7,7 @@
 #------------------------------------------#
 
 # -- DATA -- #
-import random
+import random # imports function that assigns random number to ID
 strChoice = '' # User input
 lstTbl = []  # list of lists to hold data
 dicRow = {}  # list of data row
